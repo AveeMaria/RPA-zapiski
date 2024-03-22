@@ -27,7 +27,17 @@ public:
 
 	//kopirni konstruktor
 	Razred(const Razred &);
+
+	//operator << (za izpis)
+	friend ostream& operator<<(ostream& os,const Razred&);
 };
+
+//operator << loh izpises ceu class, da nerabis izpisa
+ostream& operator<<(ostream& os, const Razred& R)
+{
+    os << R.x << " " << R.y <<"\n";
+    return os;
+}
 
 void Razred::izpis() {
 	std::cout<<x<<" "<<y<<"\n";
