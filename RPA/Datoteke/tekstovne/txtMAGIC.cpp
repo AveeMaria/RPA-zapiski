@@ -78,8 +78,67 @@ void KopirajIzbrisi(const char inputfile[],const char outputfile[]) {
 	}	
 }
 
+void IzpisiNtoVrstico(const char* filename, int n) {
+	ifstream datai(filename, ios::app);
+	if (datai.is_open()) {
+		{
+			int i = 0; string s;
+			while (getline(datai, s)) {
+				if (i == n) {
+					cout << s << "\n";
+					break;
+				}
+				++i;
+			}
+		}
+		datai.close();
+	}
+}
+
+void IzpisiNtoBesedo(const char* filename, int n) {
+	ifstream datai(filename, ios::app);
+	if (datai.is_open()) {
+		{
+			int i = 0; string s;
+			while (datai >> s) {
+				if (i == n) {
+					cout << s << "\n";
+					break;
+				}
+				++i;
+			}
+		}
+		datai.close();
+	}
+}
+
+int VrniVrstico(const char* filename, const char* iskanTXT) {
+	ifstream datai(filename, ios::app);
+	if (datai.is_open()) {
+		int st_vrstice = 0;
+		{
+			string s;
+			while (getline(datai, s)) {
+				++st_vrstice;
+				if (s == iskanTXT) {
+					break;
+				}
+			}
+		}
+		return st_vrstice;
+		datai.close();
+	}
+	else {
+		std::cout << "file not open\n";
+	}
+	return 0;
+}
+
 int main(int argc, char const *argv[])
 {
+	//fun fact tudi txt file lahko odpres v append mode:
+	//ofstream datao("besedilo.txt",ios::app);
+
 //	IzpisiVseVRSTICE("besedilo.txt");
 //	IzpisiVseBESEDE("besedilo.txt");
 	
@@ -89,6 +148,11 @@ int main(int argc, char const *argv[])
 
 //	KopirajIzbrisi("besedilo.txt","mjav.txt");
 //	Kopiraj("besedilo.txt","mjav.txt");
+
+//	IzpisiNtoVrstico("besedilo.txt",5);
+//	IzpisiNtoBesedo("besedilo.txt",5);
+
+//	cout << "iskana beseda se nahaja v: " << VrniVrstico("besedilo.txt", "iskana vrstica") << " vrstici\n";
 
 	//remove("stevila.txt");rename("tmp.txt","stevila.txt");
 	return 0;
