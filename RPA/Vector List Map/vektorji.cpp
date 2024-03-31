@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <cstring>//zato kr rabm strcpy da compiler ne joka
+#include <cstring>//(loh tut string.h) zato kr rabm strcpy da compiler ne joka
 //strcpy nekak pusti sprement "const char*" v "char []" kar drgac ni legal
 
 using namespace std;
