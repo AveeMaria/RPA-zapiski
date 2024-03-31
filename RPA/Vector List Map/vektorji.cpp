@@ -138,7 +138,7 @@ int main()
     //nemaras se/makarovic varianta (gre od zacetka do konc vektorja)
     for(vector<Razred>::iterator it=v.begin(); it != v.end(); ++it) {
         //it->izpis();
-        cout<<*(it)<<"\n";
+        cout<<*it<<"\n";
     }
 */
 
