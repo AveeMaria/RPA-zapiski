@@ -78,6 +78,18 @@ void KopirajIzbrisi(const char inputfile[],const char outputfile[]) {
 	}	
 }
 
+//overwirta z nicemer
+void SprazniDatoteko(const char* filename) {
+	ofstream datao(filename);//nc ne damo da pustimo overwrite mode
+	if (datao.is_open()) {
+		datao << "";
+		datao.close();
+	}
+	else {
+		cout << "file not open\n";
+	}
+}
+
 void IzpisiNtoVrstico(const char* filename, int n) {
 	ifstream datai(filename, ios::app);
 	if (datai.is_open()) {
@@ -152,6 +164,7 @@ int main(int argc, char const *argv[])
 //	IzpisiNtoVrstico("besedilo.txt",5);
 //	IzpisiNtoBesedo("besedilo.txt",5);
 
+//	SprazniDatoteko("mjav.txt");
 //	cout << "iskana beseda se nahaja v: " << VrniVrstico("besedilo.txt", "iskana vrstica") << " vrstici\n";
 
 	//remove("stevila.txt");rename("tmp.txt","stevila.txt");
