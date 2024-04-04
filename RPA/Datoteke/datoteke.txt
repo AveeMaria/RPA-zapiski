@@ -1,0 +1,106 @@
+OPOMNIK:
+	cin bere do whitespaca (presledek,enter,..)
+	
+	getline(cin, ime_stringa);
+
+	getline(ime_STREAMA,string);
+
+	fgets(ime_c_stringa,dolzina,stdin);
+	cin.getline(ime_c_stringa,dolzina);
+
+ifstream - samo bere iz dat
+ofstream - samo pise v dat
+fstream - lahko pise in/ali bere, odvisno od podanih flagov ios::in ios::out
+
+ZAPOREDJE:
+
+1. nardimo filestream in odpremo file
+2. preverimo ce je odprt
+3. zapisemo/izpisemo ALI prestavimo get/put pointer in zapisemo/izpisemo 
+4. zapremo filestream
+
+1. ifstream data("ime.bin/txt",dodatni flagi);
+2. data.is_open();
+3. 
+	//seekp=seekPut in seekg=seekGet
+	//to premakne sam kazalc za branje/pisanje, nc ne prebere/zapise samo po sebi
+
+	//read/write/seekp/seekg/tellg/tellp je za binarne (r/w se da tud v txt baje)
+	
+	//ponavadi je datatypeclass/struktura
+	Datatype a;
+
+	data.write((char*)&a,sizeof(a));//zapise, ko zapise premakne seekp za en element
+	data.read((char*)&a,sizeof(a));//prebere, ko prebere premakne seekg za en element
+
+	//lahko damo ios::beg, ios::end, ios::cur
+	
+	data.seekp(sizeof(a),ios::beg);
+	data.seekg(sizeof(a),ios::beg);
+
+	//lahko tudi na specificno lokacijo
+	//bere iz 10. mesta (nisem probal, nevem ce je res)
+	std::streampos position = 10;
+   	datao.seekg(position);
+	
+4. data.close();
+
+----------
+
+fstream ponavadi odpremo z ios::in in ios::out, lahko tud z ios::ate in ios::app
+	
+	!!!Za binarne moramo vedno dati ios::binary!!!
+	
+	//ce ne odpremo file v ate/app mode bo overwrital podatke od prej
+	
+	//ce datoteka neobstaja ifstream nc ne dela, ofstream pa jo ustvari 
+
+	ATE:
+	v startu da pointer za branje/pisanje (odvisn od streama) na konec.
+	ta pointer lahko premikamo naprej/nazaj
+	!!!CE PRI ATE ne dodamo ios::in/ios::out bo corruptal vse podatke od prej!!!
+	
+	APP:
+	vsakic postavi pointer za pisanje na konec, nemoremo pisat¸na konec
+	pointerja za pisanje nemoremo prestavit pred konec
+
+
+//prestavi bralni pointer na zacetek
+file.seekg(0, ios::beg);
+
+//prestavi pisalni pointer na zacetek
+file.seekg(0, ios::end);
+
+----------
+
+Zapis v tekstovno dat:
+	string s;char c;float f;
+	//ko zapisemo nekaj v txt se bo kazalec premaknil naprej za dolzino prejsnjega vpisa
+	data<<s<<"\n"<<c<<"\n"<<f<<"\n";//vpise vse to kot ce bi cout uporabli
+
+Branje tekstovne dat:
+	datatype nekaspremenljivka;
+	data>>nekaspremenljivka;//to spremenljivko pol izpises,returnas,...
+
+	//ce hocemo prebrat celo TXT datoteko:
+	while(data>>nekaspremenljivka(usualy string)) {
+		//koda
+	}
+
+	//ce je txt file z 1.3;-3.44;9.91; itd. potem ga beremo:
+	float f;char c;
+
+	//lahko bi samo v while dali datai>>f>>
+	while(datai>>f) {
+		datai>>c;
+	}		
+
+//prebere vse iz fila v c
+	while (file >> std::noskipws >> c) {
+		//koda
+	}
+
+noskipws naredi da >> ali << ne skippa presledkov/enterjev kot jih po defaultu
+
+
+!!!za prazne dat (BIN IN TXT) se while(nacinbranja) ne izvede!!!
