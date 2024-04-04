@@ -1,67 +1,22 @@
 #include <iostream>
+#include <cstring>
 #include <fstream>
-#include <string>
-#include <time.h>
+
 using namespace std;
 
-//nesme met stringov, lahko pa je Cjevski niz :nerd:
-//za scientific purpose je Podatek DIJAK
-struct Podatek {
+struct Dijak{
 	char priimek[11];
 	float visina;
-	short starost;
 };
 
-//zapise podatek na N-to mesto v file
-void ZapisiNaMesto(const char filename[], Podatek x, int n) {
-    ofstream datao(filename, std::ios::binary | std::ios::in | std::ios::out);
-    if (datao.is_open()) {
-    	//mozni so ios::beg/end/cur 
-		//beg je branje/pisanje od zacetka levo in end je od konca desno
-        datao.seekp((n - 1) * sizeof(x), std::ios::beg);
-        datao.write((char*)&x, sizeof(x));
-        datao.close();
-    } else {
-        cout << "File not open\n";
-    }
-}
-
-//izpise podatek iz N-tega mesta iz fila
-void IzpisIzMesta(const char filename[], int n) {
-    ifstream datai(filename, std::ios::binary | std::ios::in | std::ios::out);
-    if (datai.is_open()) {
-    	Podatek x;//ce hocmo ga loh returnamo,kle ga nebom
-    	//mozni so ios::beg/end/cur 
-		//beg je branje/pisanje od zacetka levo in end je od konca desno
-        datai.seekg((n - 1) * sizeof(x), std::ios::beg);
-        datai.read((char*)&x, sizeof(x));
-        cout<<x.priimek<<" "<<x.visina<<" "<<x.starost<<"\n";
-        datai.close();
-    } else {
-        cout << "File not open\n";
-    }
-}
-
-//posljemo mu podatek ki ga nej zapise v file
-void ZapisivDatoteko(const char filename[],Podatek x) {
-	ofstream datao(filename, std::ios::binary | std::ios::app);//odpremo binary v append mode
-	//append mode doda podatke na konc datoteke in NE overwrita stare
-	if(datao.is_open()) {
-		datao.write((char*) &x,sizeof(x));
-		datao.close();
-	}
-	else {
-		cout<<"file not open\n";
-	}
-}
-
-void IzpisizDatoteke(const char filename[]) {
+void IzpisizDatoteke(const char* filename) {
 	ifstream datai(filename);
 	if(datai.is_open()) {
-		Podatek x;
+		cout<<"izpis:\n";
+		Dijak x;
 		//izpisemo vse iz fila
 		while(datai.read((char*) &x,sizeof(x))) {
-			cout<<x.priimek<<" "<<x.visina<<" "<<x.starost<<"\n";
+			cout<<x.priimek<<x.visina<<"\n";
 		}
 		datai.close();
 	}
@@ -70,21 +25,59 @@ void IzpisizDatoteke(const char filename[]) {
 	}
 }
 
-void vpis(Podatek& a) {
-    std::cin.getline(a.priimek, 11);
-    a.visina = (rand()%1500+500)/10;
-    a.starost = rand()%99+1;
+void VpisDijak(Dijak &a) {
+	fgets(a.priimek,11,stdin);
+	cin>>a.visina;cin.ignore();
 }
 
-int main(int argc, char const *argv[]) {
-	srand(time(NULL));
+void SortiranVpis(const char* filename,Dijak a) {
+	ifstream datai(filename,ios::binary);
+	ofstream datao("tmp.bin",ios::binary);
 
-//	Podatek a;vpis(a);
-//	ZapisivDatoteko("binarna.bin",a);
-//	IzpisizDatoteke("binarna.bin");
+	//to je ce se ni fila zato da ga ustvari da ne joka
+	if(datai.is_open()==false) {
+		ofstream nardimofile(filename,ios::binary);
+		datai.open(filename,ios::binary);
+		nardimofile.close();
+	}
 
-//	ZapisiNaMesto("binarna.bin",a,3);
-//	IzpisIzMesta("binarna.bin",4);
+	//prever da ni prazna in da je ze vpisu novga dijaka
+	bool neki=false;
+	Dijak b;//tega preberemo
 
+	if((datai.is_open())&&(datao.is_open())) {
+		//prebere celo dat
+		while(datai.read((char*)&b,sizeof(b))) {
+			//ce je vecji ga zapisemo prej
+			//uredi po imenu, strcmp returna true/false ker je vecji
+			if(strcmp(a.priimek,b.priimek)&&neki==false) {
+				datao.write((char*)&a,sizeof(a));
+				neki=true;
+			}
+			//v vsakem primeru prepisemo b v tmp.bin
+			datao.write((char*)&b,sizeof(b));
+		}
+		//ce je prazna dat se while ne izvede in zapise na prvo mesto
+		if(neki==false) {
+			datao.write((char*)&a,sizeof(a));
+		}
+		datai.close();
+		datao.close();
+	}
+	
+	//deletamo staro dat, preimenujemo tmp v ime stare datoteke
+	remove(filename);rename("tmp.bin",filename);
+}
+
+int main() {
+	Dijak a;
+	
+	//vpise 3 dijake
+	for(int i=0;i<3;++i) {
+		VpisDijak(a);
+		SortiranVpis("Dijaki.bin",a);	
+	}
+
+	IzpisizDatoteke("Dijaki.bin");
 	return 0;
 }
